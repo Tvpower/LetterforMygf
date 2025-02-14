@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Valentine</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+      font-family: 'Orbitron', sans-serif;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Chaos energy effect */
+    .chaos-energy {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background:
+              radial-gradient(circle at 30% 20%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(255, 0, 0, 0.1) 0%, transparent 50%);
+      filter: url('#turbulence');
+      z-index: 1;
+    }
+
+    .floating-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      animation: float-up var(--duration) linear infinite;
+      filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.5));
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(110vh) scale(0) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .envelope {
+      position: relative;
+      width: 85vw;
+      max-width: 300px;
+      height: 200px;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .envelope:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.5));
+    }
+
+    .envelope.open {
+      transform: rotateX(180deg);
+      animation: glitch 0.3s ease-out;
+    }
+
+    @keyframes glitch {
+      0% { transform: rotateX(180deg) translate(0); }
+      20% { transform: rotateX(180deg) translate(-5px, 5px); }
+      40% { transform: rotateX(180deg) translate(5px, -5px); }
+      60% { transform: rotateX(180deg) translate(-5px, -5px); }
+      80% { transform: rotateX(180deg) translate(5px, 5px); }
+      100% { transform: rotateX(180deg) translate(0); }
+    }
+
+    .envelope-front {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #ff0000 0%, #cc0000 100%);
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backface-visibility: hidden;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+
+    .heart {
+      color: white;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      animation: chaos-pulse 2s infinite;
+    }
+
+    @keyframes chaos-pulse {
+      0% { transform: scale(1); filter: hue-rotate(0deg); }
+      50% { transform: scale(1.1); filter: hue-rotate(30deg); }
+      100% { transform: scale(1); filter: hue-rotate(0deg); }
+    }
+
+    .question-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 3;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .question {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #ff0000;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+      animation: text-flicker 3s infinite;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    @keyframes text-flicker {
+      0% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); }
+      5% { text-shadow: 3px 3px 6px rgba(255, 0, 0, 0.5); }
+      10% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); }
+      15% { text-shadow: 3px 3px 6px rgba(255, 0, 0, 0.5); }
+      100% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); }
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .option-btn {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 25px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: rotate(45deg);
+      transition: 0.5s;
+    }
+
+    .option-btn:hover::before {
+      animation: btn-shine 0.5s;
+    }
+
+    @keyframes btn-shine {
+      0% { transform: rotate(45deg) translateX(-100%); }
+      100% { transform: rotate(45deg) translateX(100%); }
+    }
+
+    .yes-btn {
+      background: linear-gradient(145deg, #ff0000 0%, #cc0000 100%);
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+
+    .no-btn {
+      background: #333;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .yes-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+
+    .letter {
+      position: absolute;
+      width: calc(85vw - 40px);
+      max-width: 260px;
+      height: 380px;
+      background: linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%);
+      padding: 20px;
+      border-radius: 15px;
+      color: black;
+      overflow-y: auto;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+      display: none;
+      border: 2px solid rgba(255, 0, 0, 0.5);
+      z-index: 999;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .letter-content {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #000000;
+      text-shadow: none;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .photo-gallery img {
+      width: 100%;
+      border-radius: 8px;
+      border: 2px solid #ff0000;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .tap-instruction {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      animation: glow 2s infinite;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 15px;
+      border-radius: 20px;
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 5px rgba(255, 0, 0, 0.5); }
+      50% { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+    }
+  </style>
+</head>
+<body>
+<!-- SVG Filters for effects -->
+<svg style="position: absolute; width: 0; height: 0;">
+  <filter id="turbulence">
+    <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" seed="1">
+      <animate attributeName="seed" from="1" to="2" dur="0.5s" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" scale="10"/>
+  </filter>
+</svg>
+
+<div class="chaos-energy"></div>
+
+<div class="envelope">
+  <div class="envelope-front">
+    <div class="heart">
+      <i class="fas fa-heart"></i>
+    </div>
+  </div>
+</div>
+
+<div class="question-container">
+  <div class="question">HI! Do you wanna be my valentine? >.<</div>
+  <div class="options">
+    <button class="option-btn yes-btn">YES I LOVE YOU</button>
+    <button class="option-btn no-btn">NO I HATE YOU</button>
+  </div>
+</div>
+
+<div class="letter">
+  <div class="letter-content">
+    Dear Austin,
+
+    I wanted to take this moment to tell you how much you mean to me. Your smile brightens my day and your presence makes everything better. Will you be my Valentine?
+  </div>
+  <div class="photo-gallery">
+    <img src="/api/placeholder/150/150" alt="Us 1">
+    <img src="/api/placeholder/150/150" alt="Us 2">
+    <img src="/api/placeholder/150/150" alt="Us 3">
+    <img src="/api/placeholder/150/150" alt="Us 4">
+  </div>
+  <div class="letter-content" style="text-align: right; margin-top: 20px;">
+    Love always,<br>
+    Mario
+  </div>
+</div>
+
+<div class="tap-instruction">TAP TO UNLEASH THE LOVE ❤️</div>
+
+<script>
+  let clickCount = 0;
+  const requiredClicks = 5;
+
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'floating-heart';
+
+    const color = Math.random() > 0.5 ? '#ff0000' : '#000000';
+    const size = Math.random() * 20 + 10;
+
+    heart.innerHTML = '<i class="fas fa-heart"></i>';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = size + 'px';
+    heart.style.color = color;
+    heart.style.setProperty('--duration', Math.random() * 3 + 4 + 's');
+
+    document.body.appendChild(heart);
+
+    heart.addEventListener('animationend', () => {
+      heart.remove();
+    });
+  }
+
+  document.querySelector('.envelope').addEventListener('click', function() {
+    this.classList.add('open');
+    setTimeout(() => {
+      this.style.display = 'none';
+      document.querySelector('.tap-instruction').style.display = 'none';
+      document.querySelector('.question-container').style.display = 'flex';
+    }, 500);
+  });
+
+  document.querySelector('.yes-btn').addEventListener('click', function() {
+    clickCount++;
+    if (clickCount < requiredClicks) {
+      this.innerHTML = `YES I LOVE YOU <br>(${requiredClicks - clickCount} more times!)`;
+      for (let i = 0; i < 5; i++) {
+        createHeart();
+      }
+      // Add glitch effect on click
+      this.style.animation = 'glitch 0.3s ease-out';
+      setTimeout(() => {
+        this.style.animation = '';
+      }, 300);
+    } else {
+      document.querySelector('.question-container').style.display = 'none';
+      document.querySelector('.letter').style.display = 'block';
+      setInterval(createHeart, 300);
+    }
+  });
+
+  document.querySelector('.no-btn').addEventListener('click', function() {
+    this.style.animation = 'glitch 0.3s ease-out';
+    setTimeout(() => {
+      this.remove();
+    }, 300);
+  });
+
+  // Create initial ambient hearts
+  setInterval(createHeart, 2000);
+</script>
+</body>
+</html>
