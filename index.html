@@ -269,6 +269,23 @@
       transform: scale(1.05);
     }
 
+    .photo-gallery img.chaos-effect {
+      animation: chaos-glitch 0.3s ease-out;
+      filter: drop-shadow(0 0 10px #ff0000) 
+              drop-shadow(0 0 20px #ff0000) 
+              brightness(1.2) 
+              contrast(1.2);
+    }
+
+    @keyframes chaos-glitch {
+      0% { transform: translate(0) scale(1.05); filter: hue-rotate(0deg); }
+      20% { transform: translate(-5px, 5px) scale(1.1); filter: hue-rotate(90deg); }
+      40% { transform: translate(5px, -5px) scale(1.15); filter: hue-rotate(180deg); }
+      60% { transform: translate(-5px, -5px) scale(1.1); filter: hue-rotate(270deg); }
+      80% { transform: translate(5px, 5px) scale(1.05); filter: hue-rotate(360deg); }
+      100% { transform: translate(0) scale(1); filter: hue-rotate(0deg); }
+    }
+
     .tap-instruction {
       position: fixed;
       bottom: 20px;
@@ -323,14 +340,15 @@
   <div class="letter-content">
     Dear Austin,
 
-    I wanted to take this moment to tell you how much you mean to me. Your smile brightens my day and your presence makes everything better. Will you be my Valentine?
+    I wanted to tell you how much I truly love you. I thought of many ways, like a physical gift. But that's not special so I thought why no show you how much I love you doing what I love!
+    My heart will always be yours, my soul, and my mind. You are my dreams come true.
   </div>
   <div class="photo-gallery">
-    <img src="/api/placeholder/150/150" alt="Us 1">
-    <img src="/api/placeholder/150/150" alt="Us 2">
-    <img src="/api/placeholder/150/150" alt="Us 3">
-    <img src="/api/placeholder/150/150" alt="Us 4">
-  </div>
+    <img src="img/WhatsApp Image 2025-02-13 at 23.17.22_57faf04c.jpg" alt="Us 1">
+    <img src="img/WhatsApp Image 2025-02-13 at 23.18.02_d905a1fe.jpg" alt="Us 2">
+    <img src="img/WhatsApp Image 2025-02-13 at 23.18.12_9023ba44.jpg" alt="Us 3">
+    <img src="img/WhatsApp Image 2025-02-13 at 23.18.52_e1ed6b5c.jpg" alt="Us 4">
+</div>
   <div class="letter-content" style="text-align: right; margin-top: 20px;">
     Love always,<br>
     Mario
@@ -400,6 +418,23 @@
 
   // Create initial ambient hearts
   setInterval(createHeart, 2000);
+
+  document.querySelectorAll('.photo-gallery img').forEach(img => {
+    img.addEventListener('click', function() {
+      // Add chaos effect class
+      this.classList.add('chaos-effect');
+      
+      // Create extra hearts burst effect
+      for (let i = 0; i < 10; i++) {
+        setTimeout(createHeart, i * 50);
+      }
+      
+      // Remove the class after animation completes
+      setTimeout(() => {
+        this.classList.remove('chaos-effect');
+      }, 300);
+    });
+  });
 </script>
 </body>
 </html>
